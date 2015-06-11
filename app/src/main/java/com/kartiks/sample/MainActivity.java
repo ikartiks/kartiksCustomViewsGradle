@@ -14,6 +14,8 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_main);
+
+		//Test CHange
 		
 		/*SliderView sv=(SliderView)findViewById(R.id.SliderView1);
 		sv.setOnReachedListener(new OnReachedListener() {
