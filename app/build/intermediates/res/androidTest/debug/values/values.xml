@@ -2,7 +2,7 @@
 <resources>
     <declare-styleable name="CustomTextView"><attr format="string" name="ttfResourseName"/></declare-styleable>
     <declare-styleable name="GifImageView"><attr format="string" name="gifResourseId"/></declare-styleable>
-    <!-- From: file:/Users/kartikshah/StudioProjects/KartiksCustomViews1/app/build/intermediates/bundles/debug/res/values/values.xml -->
+    <!-- From: file:/Users/kartikshah/StudioProjects/kartiksCustomViewsGradle/app/build/intermediates/bundles/debug/res/values/values.xml -->
     <eat-comment/>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>

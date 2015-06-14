@@ -2,10 +2,10 @@ apply plugin: 'com.android.library'
 
 buildscript {
     repositories {
-        //mavenCentral()
+        mavenCentral()
     }
     dependencies {
-        //classpath 'com.android.tools.build:gradle:1.2.3+'
+        classpath 'com.android.tools.build:gradle:1.2.3+'
     }
 }
 
@@ -26,10 +26,10 @@ android {
 
     sourceSets {
         main {
-            java.srcDirs = ['src/main/java']
-            res.srcDirs = ['src/main/res']
+            java.srcDirs = ['app/src/main/java']
+            res.srcDirs = ['app/src/main/res']
 
-            manifest.srcFile 'src/main/AndroidManifest.xml'
+            manifest.srcFile 'app/src/main/AndroidManifest.xml'
         }
     }
 
