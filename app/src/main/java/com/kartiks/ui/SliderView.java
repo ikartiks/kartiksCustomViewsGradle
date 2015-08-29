@@ -1,12 +1,8 @@
 package com.kartiks.ui;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -16,7 +12,8 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.kartiks.sample.R;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SliderView extends View {
 
@@ -41,7 +38,7 @@ public class SliderView extends View {
 	public SliderView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		
-		bm=BitmapFactory.decodeResource(getResources(), R.drawable.pointer);
+		//bm=BitmapFactory.decodeResource(getResources(), R.drawable.pointer);
 		bmwidth=bm.getWidth();
 		bmheight=bm.getHeight();
 		//setLayerType(LAYER_TYPE_SOFTWARE, paint);

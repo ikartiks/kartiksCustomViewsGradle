@@ -3,6 +3,9 @@ package com.kartiks.sample;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
+
+import com.kartiks.ui.BaseDialog;
 
 public class MainActivity extends Activity {
 
@@ -14,6 +17,12 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_main);
+
+		BaseDialog dialog=BaseDialog.createFullScreenBaseDialog(context,false);
+        View v =getLayoutInflater().inflate(R.layout.activity_main,null);
+        dialog.setContent(v);
+        dialog.show();
+
 
 		//Test CHange
 		

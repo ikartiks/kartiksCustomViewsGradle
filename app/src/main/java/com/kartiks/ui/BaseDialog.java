@@ -18,6 +18,7 @@ public class BaseDialog extends Dialog{
     Context context;
 
     BaseDialog dialog=this;
+    static int bgResourceId;
 
     private BaseDialog(Context context) {
         super(context);
@@ -34,11 +35,9 @@ public class BaseDialog extends Dialog{
         this.context=context;
     }
 
-    public static BaseDialog createFullScreenBaseDialog(Context context){
+    public static BaseDialog createFullScreenBaseDialog(Context context,int bgResourceId){
 
-
-        //AppPreferences appPreferences=AppPreferences.getAppPreferences(context);
-
+        BaseDialog.bgResourceId=bgResourceId;
         Activity activity= (Activity) context;
         DisplayMetrics displaymetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -48,7 +47,9 @@ public class BaseDialog extends Dialog{
         BaseDialog baseDialog = new BaseDialog(context, android.R.style.Theme_Light_NoTitleBar);
         //baseDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         // must be called b4 adding content
-        baseDialog.getWindow().setLayout(width,height);
+        baseDialog.getWindow().setLayout(width, height);
+
+        //ShapeDrawable shapeDrawable=new ShapeDrawable(new RoundRectShape(0.5f,new RectF(0.5f,0.5f,0.5f,0.5f),0.5f));
         baseDialog.getWindow().setBackgroundDrawableResource(R.drawable.overlay);
 
         baseDialog.setContentView(R.layout.base_dialog);
@@ -56,7 +57,6 @@ public class BaseDialog extends Dialog{
     }
 
     public void setContent(View v){
-
         RelativeLayout mainContainer= (RelativeLayout) findViewById(R.id.MainContainer);
         mainContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +66,7 @@ public class BaseDialog extends Dialog{
         });
 
         LinearLayout container=(LinearLayout)findViewById(R.id.Container);
+        container.setBackgroundResource(bgResourceId);
         container.addView(v,new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT));
     }
 
