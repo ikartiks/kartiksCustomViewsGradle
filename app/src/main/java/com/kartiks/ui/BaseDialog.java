@@ -35,7 +35,7 @@ public class BaseDialog extends Dialog{
         this.context=context;
     }
 
-    public static BaseDialog createFullScreenBaseDialog(Context context,int bgResourceId){
+    public static BaseDialog createFullScreenBaseDialog(Context context, int style,int bgResourceId){
 
         BaseDialog.bgResourceId=bgResourceId;
         Activity activity= (Activity) context;
@@ -44,7 +44,7 @@ public class BaseDialog extends Dialog{
         int height = displaymetrics.heightPixels;
         int width = displaymetrics.widthPixels;
 
-        BaseDialog baseDialog = new BaseDialog(context, android.R.style.Theme_Light_NoTitleBar);
+        BaseDialog baseDialog = new BaseDialog(context, style);
         //baseDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         // must be called b4 adding content
         baseDialog.getWindow().setLayout(width, height);
