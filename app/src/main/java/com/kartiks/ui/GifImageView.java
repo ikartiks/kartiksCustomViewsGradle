@@ -1,12 +1,5 @@
 package com.kartiks.ui;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -18,241 +11,218 @@ import android.graphics.Movie;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 
 import com.kartiks.sample.R;
+import com.kartiks.utility.LoggerGeneral;
+
+import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class GifImageView extends View {
 
-	private long mMovieStart;
-	Context context;
-	private Movie movie;
-	private Paint p;
-	private int width;//,height;
-	
-	String resourse;
-	
-	double movieWidth,movieHeight,factor,scaledMoveWidth,scaledMovieHeight;
+    Context context;
+    private long mMovieStart;
+    private Movie movie;
+    private Paint p;
+    private int width,height;
 
-	public GifImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    String resourse;
 
-		super(context, attrs, defStyleAttr);
-		this.context = context;
-		p = new Paint();
-		p.setAntiAlias(true);
-		// height=metrics.heightPixels;
+    double movieWidth,movieHeight,factor,scaledMoveWidth,scaledMovieHeight;
 
-		TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.GifImageView, 0, 0);
-		try {
-			resourse = a.getString(R.styleable.GifImageView_gifResourseId);
-			// LoggerGeneral.e("res "+resourse);
+    public GifImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+
+        super(context, attrs, defStyleAttr);
+        this.context = context;
+        p = new Paint();
+        p.setAntiAlias(true);
+        // height=metrics.heightPixels;
+
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.GifImageView, 0, 0);
+        try {
+            resourse = a.getString(R.styleable.GifImageView_gifResourseId);
+            // LoggerGeneral.e("res "+resourse);
 			/*if (resourse != null) {
 				initializeStreamFromXML(resourse);
 			}*/
-			invalidate();
+            invalidate();
 
-		} finally {
-			a.recycle();
-		}
-	}
+        } finally {
+            a.recycle();
+        }
+    }
 
-	public GifImageView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		this.context = context;
-		p = new Paint();
-		p.setAntiAlias(true);
-		
-		TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.GifImageView, 0, 0);
-		try {
-			resourse = a.getString(R.styleable.GifImageView_gifResourseId);
+    public GifImageView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        this.context = context;
+        p = new Paint();
+        p.setAntiAlias(true);
+
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.GifImageView, 0, 0);
+        try {
+            resourse = a.getString(R.styleable.GifImageView_gifResourseId);
 			/*if (resourse != null) {
 				initializeStreamFromXML(resourse);
 			}*/
-			invalidate();
+            invalidate();
 
-		} finally {
-			a.recycle();
-		}
-		
-		
-	}
-	
-	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		super.onSizeChanged(w, h, oldw, oldh);
-		
-		width=w;
-		//height=h;
-		if (resourse != null) {
-			initializeStreamFromXML(resourse);
-		}
-		
-		
-	}
+        } finally {
+            a.recycle();
+        }
+    }
 
-	public GifImageView(Context context) {
-		super(context);
-		p = new Paint();
-		p.setAntiAlias(true);
-		invalidate();
-		// height=metrics.heightPixels;
-		this.context = context;
-	}
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        LoggerGeneral.e("onMeasure");
 
-	public void initializeStream(String path) {
+        if(width==0){
+            //super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-		// LoggerGeneral.e("initializing..");
-		// InputStream is=context.getResources().openRawResource(R.raw.pb);
-		File f = new File(path);
-		if (f.exists()) {
-			FileInputStream fis;
-			try {
-				fis = new FileInputStream(f);
-				// directlt decoding fis doesnt work,put it in bis
-				commonInitialization(fis);
+            //int heightSpecMode=MeasureSpec.getMode(heightMeasureSpec);
+            //int heightSpecSize=MeasureSpec.getSize(heightMeasureSpec);
 
-			} catch (FileNotFoundException e) {
+            int widthSpecMode=MeasureSpec.getMode(widthMeasureSpec);
+            int widthSpecSize=MeasureSpec.getSize(widthMeasureSpec);
 
-				e.printStackTrace();
-			}
-		}
-	}
+            if(widthSpecMode==MeasureSpec.EXACTLY){
 
-	private void initializeStreamFromXML(String gifAssetName) {
+                //xxdp or match parent
+                LoggerGeneral.e("width should be exact "+widthSpecSize);
+                //my width is equal to hSpecSize i.e match parent
+                width=widthSpecSize;
 
-		//LoggerGeneral.e("initializing..");
-		// InputStream is=context.getResources().openRawResource(R.raw.pb);
-		try {
-			//LoggerGeneral.e("initializing..1");
-			InputStream is = context.getAssets().open(gifAssetName);
-			
-			commonInitialization(is);
+            }else{
 
-		} catch (FileNotFoundException e) {
+                //wrapContent
+                LoggerGeneral.e("width should be wrapped "+widthSpecSize);
+                width=widthSpecSize;
+                //LoggerGeneral.e("width spec size"+widthSpecSize);
+                //my width is equal to wrap_content
+            }
 
-			e.printStackTrace();
-		} catch (IOException e) {
+            if (resourse != null) {
+                initializeStreamFromXML(resourse);
+            }
 
-			e.printStackTrace();
-		}
-	}
-	
-	
-	public void commonInitialization(InputStream is){
-		
-		
-		BufferedInputStream bis = new BufferedInputStream(is);
-		bis.mark(100000);
-		// v.imp ,doesnt work without mark as well ,other wise we get
-		// java.io.IOException: Mark has been invalidated.
-		//LoggerGeneral.e("initializing..2");
-		movie = Movie.decodeStream(bis);
-		
-		movieWidth=movie.width();
-		movieHeight=movie.height();
-		
-		if(movieWidth>width){
-			
-			factor = movieWidth / width;
-			scaledMoveWidth = movieWidth / factor;
-			scaledMovieHeight = movieHeight / factor;
-			
-			LayoutParams params = this.getLayoutParams();
-			params.width =(int) scaledMoveWidth;
-			params.height=(int)scaledMovieHeight;
-			this.setLayoutParams(params);
-		
-		}else{
-			
-			scaledMoveWidth=movieWidth;
-			scaledMovieHeight=movieHeight;
-			
-			LayoutParams params = this.getLayoutParams();
-			params.height =(int) movieHeight;
-			params.width=(int)movieWidth;
-			this.setLayoutParams(params);
-		}
-		
-		
-		
-		invalidate();
-		requestLayout();
-	}
-	
-	
-
-	@SuppressLint("DrawAllocation")
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-		canvas.drawColor(Color.TRANSPARENT);
-
-		//LoggerGeneral.e("ondraw 1");
-
-		if (movie == null) {
-
-			//LoggerGeneral.e("movie is null");
-			canvas.drawPaint(p);
-			return;
-		}
+        }
 
 
-		long now = android.os.SystemClock.uptimeMillis();
-		if (mMovieStart == 0) { // first time
-			mMovieStart = now;
-		}
-		if (movie != null) {
-			int dur = movie.duration();
-			if (dur == 0) {
-				dur = 1000;
-			}
-			int relTime = (int) ((now - mMovieStart) % dur);
-			movie.setTime(relTime);
-			
-			Bitmap bm = Bitmap.createBitmap((int) movieWidth, (int) movieHeight, Bitmap.Config.ARGB_8888);
 
-			Canvas c = new Canvas(bm);
-			movie.draw(c, 0, 0);
+        //LoggerGeneral.e("measure called"+width +"  "+height);
+        setMeasuredDimension(width,height);
+    }
 
-			
-			bm = Bitmap.createScaledBitmap(bm, (int) scaledMoveWidth, (int) scaledMovieHeight, true);
-			canvas.drawBitmap(bm, new Matrix(), p);
+    public GifImageView(Context context) {
+        super(context);
+        p = new Paint();
+        p.setAntiAlias(true);
+        invalidate();
+        // height=metrics.heightPixels;
+        this.context = context;
+    }
 
-			invalidate();
+    private void initializeStreamFromXML(String gifAssetName) {
 
-			//double movieWidth = movie.width(), movieHeight = movie.height(), factor;
 
-			/*if (movieWidth > width) {
+        try {
 
-				
-				Bitmap bm = Bitmap.createBitmap((int) movieWidth, (int) movieHeight, Bitmap.Config.ARGB_8888);
+            InputStream is = context.getAssets().open(gifAssetName);
+            commonInitialization(is);
+        } catch (FileNotFoundException e) {
 
-				Canvas c = new Canvas(bm);
-				movie.draw(c, 0, 0);
+            e.printStackTrace();
+        } catch (IOException e) {
 
-				factor = movieWidth / width;
-				movieWidth = movieWidth / factor;
-				movieHeight = movieHeight / factor;
-				
-				
+            e.printStackTrace();
+        }
+    }
 
-				bm = Bitmap.createScaledBitmap(bm, (int) movieWidth, (int) movieHeight, true);
-				canvas.drawBitmap(bm, new Matrix(), p);
 
-				// movie.draw(canvas, 0,0,p);
-				// canvas.scale((int)factor, (int)factor);
-				//LoggerGeneral.e("invalidate 1");
-				invalidate();
+    boolean initializedOnce=false;
+    public synchronized void  commonInitialization(InputStream is){
 
-			} else {
+        if(initializedOnce)
+            return;
+        BufferedInputStream bis = new BufferedInputStream(is);
+        bis.mark(Integer.MAX_VALUE);
+        // v.imp ,doesnt work without mark as well ,other wise we get
+        // java.io.IOException: Mark has been invalidated.
+        //LoggerGeneral.e("initializing..2");
+        movie = Movie.decodeStream(bis);
 
-				//LoggerGeneral.e("invalidate 2");
-				//movie.draw(canvas, 0, 0, p);
-				invalidate();
-			}*/
-		}
+        movieWidth=movie.width();
+        movieHeight=movie.height();
 
-		//LoggerGeneral.e("ondraw end");
-	}
+
+        LoggerGeneral.e("mw "+movieWidth+" noraml w"+width);
+        if(movieWidth>width){
+
+            factor = movieWidth / width;
+            scaledMoveWidth = movieWidth / factor;
+            scaledMovieHeight = movieHeight / factor;
+
+            height=(int)scaledMovieHeight;
+        }else if(movieWidth<width){
+
+            factor = width / movieWidth;
+            scaledMoveWidth = movieWidth * factor;
+            scaledMovieHeight = movieHeight * factor;
+
+            height=(int)scaledMovieHeight;
+        }else{
+
+            LoggerGeneral.e("comes in else ");
+            //doesnt matter if gif is bigger/smaller incase of wrap content than screen size
+            scaledMoveWidth=movieWidth;
+            scaledMovieHeight=movieHeight;
+
+            height=(int)scaledMovieHeight;
+        }
+
+        initializedOnce=true;
+        invalidate();
+        requestLayout();
+    }
+
+
+
+    @SuppressLint("DrawAllocation")
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        canvas.drawColor(Color.TRANSPARENT);
+
+        //LoggerGeneral.e("ondraw 1");
+        if (movie == null) {
+            //LoggerGeneral.e("movie is null");
+            canvas.drawPaint(p);
+            return;
+        }
+        long now = android.os.SystemClock.uptimeMillis();
+        if (mMovieStart == 0) { // first time
+            mMovieStart = now;
+        }
+        if (movie != null) {
+
+            int dur = movie.duration();
+            if (dur == 0) {
+                dur = 1000;
+            }
+            int relTime = (int) ((now - mMovieStart) % dur);
+            movie.setTime(relTime);
+
+            Bitmap bm = Bitmap.createBitmap((int) movieWidth, (int) movieHeight, Bitmap.Config.ARGB_8888);
+
+            Canvas c = new Canvas(bm);
+            movie.draw(c, 0, 0);
+
+            bm = Bitmap.createScaledBitmap(bm, (int) scaledMoveWidth, (int) scaledMovieHeight, true);
+            canvas.drawBitmap(bm, new Matrix(), p);
+
+            invalidate();
+        }
+    }
 
 }
