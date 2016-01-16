@@ -13,7 +13,6 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.kartiks.sample.R;
-import com.kartiks.utility.LoggerGeneral;
 
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
@@ -36,6 +35,7 @@ public class GifImageView extends View {
 
         super(context, attrs, defStyleAttr);
         this.context = context;
+
         p = new Paint();
         p.setAntiAlias(true);
         // height=metrics.heightPixels;
@@ -75,7 +75,13 @@ public class GifImageView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        LoggerGeneral.e("onMeasure");
+        //LoggerGeneral.e("onMeasure");
+
+        if(isInEditMode()){
+
+            setMeasuredDimension(widthMeasureSpec,widthMeasureSpec);
+            return;
+        }
 
         if(width==0){
             //super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -89,14 +95,14 @@ public class GifImageView extends View {
             if(widthSpecMode==MeasureSpec.EXACTLY){
 
                 //xxdp or match parent
-                LoggerGeneral.e("width should be exact "+widthSpecSize);
+                //LoggerGeneral.e("width should be exact "+widthSpecSize);
                 //my width is equal to hSpecSize i.e match parent
                 width=widthSpecSize;
 
             }else{
 
                 //wrapContent
-                LoggerGeneral.e("width should be wrapped "+widthSpecSize);
+                //LoggerGeneral.e("width should be wrapped "+widthSpecSize);
                 width=widthSpecSize;
                 //LoggerGeneral.e("width spec size"+widthSpecSize);
                 //my width is equal to wrap_content
@@ -145,6 +151,8 @@ public class GifImageView extends View {
 
         if(initializedOnce)
             return;
+
+
         BufferedInputStream bis = new BufferedInputStream(is);
         bis.mark(Integer.MAX_VALUE);
         // v.imp ,doesnt work without mark as well ,other wise we get
@@ -156,7 +164,7 @@ public class GifImageView extends View {
         movieHeight=movie.height();
 
 
-        LoggerGeneral.e("mw "+movieWidth+" noraml w"+width);
+        //LoggerGeneral.e("mw "+movieWidth+" noraml w"+width);
         if(movieWidth>width){
 
             factor = movieWidth / width;
@@ -173,7 +181,7 @@ public class GifImageView extends View {
             height=(int)scaledMovieHeight;
         }else{
 
-            LoggerGeneral.e("comes in else ");
+            //LoggerGeneral.e("comes in else ");
             //doesnt matter if gif is bigger/smaller incase of wrap content than screen size
             scaledMoveWidth=movieWidth;
             scaledMovieHeight=movieHeight;
@@ -182,6 +190,8 @@ public class GifImageView extends View {
         }
 
         initializedOnce=true;
+
+
         invalidate();
         requestLayout();
     }
@@ -194,35 +204,49 @@ public class GifImageView extends View {
         super.onDraw(canvas);
         canvas.drawColor(Color.TRANSPARENT);
 
-        //LoggerGeneral.e("ondraw 1");
-        if (movie == null) {
-            //LoggerGeneral.e("movie is null");
-            canvas.drawPaint(p);
-            return;
-        }
-        long now = android.os.SystemClock.uptimeMillis();
-        if (mMovieStart == 0) { // first time
-            mMovieStart = now;
-        }
-        if (movie != null) {
+        if(isInEditMode()){
 
-            int dur = movie.duration();
-            if (dur == 0) {
-                dur = 1000;
-            }
-            int relTime = (int) ((now - mMovieStart) % dur);
-            movie.setTime(relTime);
+            Paint px=new Paint();
+//            Bitmap bm= BitmapFactory.decodeResource(getResources(), R.drawable.loading);
+//            canvas.drawBitmap(bm,0,0,px);
 
-            Bitmap bm = Bitmap.createBitmap((int) movieWidth, (int) movieHeight, Bitmap.Config.ARGB_8888);
-
-            Canvas c = new Canvas(bm);
-            movie.draw(c, 0, 0);
-
-            bm = Bitmap.createScaledBitmap(bm, (int) scaledMoveWidth, (int) scaledMovieHeight, true);
-            canvas.drawBitmap(bm, new Matrix(), p);
+            //canvas.drawCircle(0,0,25f,px);
+            canvas.drawText("gif preview",0,30f,px);
 
             invalidate();
+
+        }else{
+            //LoggerGeneral.e("ondraw 1");
+            if (movie == null) {
+                //LoggerGeneral.e("movie is null");
+                canvas.drawPaint(p);
+                return;
+            }
+            long now = android.os.SystemClock.uptimeMillis();
+            if (mMovieStart == 0) { // first time
+                mMovieStart = now;
+            }
+            if (movie != null) {
+
+                int dur = movie.duration();
+                if (dur == 0) {
+                    dur = 1000;
+                }
+                int relTime = (int) ((now - mMovieStart) % dur);
+                movie.setTime(relTime);
+
+                Bitmap bm = Bitmap.createBitmap((int) movieWidth, (int) movieHeight, Bitmap.Config.ARGB_8888);
+
+                Canvas c = new Canvas(bm);
+                movie.draw(c, 0, 0);
+
+                bm = Bitmap.createScaledBitmap(bm, (int) scaledMoveWidth, (int) scaledMovieHeight, true);
+                canvas.drawBitmap(bm, new Matrix(), p);
+
+                invalidate();
+            }
         }
+
     }
 
 }
