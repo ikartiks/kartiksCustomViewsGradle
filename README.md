@@ -1,4 +1,8 @@
+
+
 # Kartik's Custom Views 
+
+# Project now moved to https://github.com/ikartiks/kartiksCustomViews
 
 This is a UI library for android which allows users to set custom typeface via xml as well as show custom gif images present in your app package.
 
